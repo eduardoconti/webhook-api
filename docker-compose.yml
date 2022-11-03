@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+  api-webhook:
+    container_name: api-webhook
+    restart: on-failure
+    build:
+      context: .
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+    command: yarn start:dev
+    env_file:
+      - .env
+    networks:
+      - api-webhook
+    depends_on:
+      - postgres
+      - redis
+  postgres:
+    image: postgres:alpine
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    container_name: 'postgres'
+    volumes:
+      - pg-data:/var/lib/postgres/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - api-webhook
+    restart: always
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis:/data
+    networks:
+      - api-webhook
+networks:
+  api-webhook:
+    driver: bridge                      
+    driver_opts:                        
+      com.docker.network.driver.mtu: 1350
+volumes:
+  pg-data:
+  redis:
+    driver: local

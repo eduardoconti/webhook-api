@@ -1,0 +1,10 @@
+.husky
+.vscode
+coverage
+dist
+documentation
+node_modules
+public
+jest.config.js
+jest.integration.config.js
+commitlint.config.js
