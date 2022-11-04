@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './main/app.module';
 import { ValidationPipe } from './infra/pipes/validation.pipe';
-import { WinstonLogger } from './infra/logger';
+import { NestLogger } from './infra/logger';
 import {
   HttpExceptionFilter,
   BaseExceptionFilter,
@@ -10,7 +10,7 @@ import {
 } from './infra/exception-filter';
 
 async function bootstrap() {
-  const logger = new WinstonLogger('NestApplication');
+  const logger = new NestLogger('NestApplication');
   const app = await NestFactory.create(AppModule);
   app.enableShutdownHooks();
   app.useGlobalPipes(new ValidationPipe());
@@ -19,7 +19,7 @@ async function bootstrap() {
   app.useGlobalFilters(new UnknownExceptionFilter());
   app.enableCors();
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 
   logger.info(`Application is running on: ${await app.getUrl()}`);
 }

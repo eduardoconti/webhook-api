@@ -1,4 +1,4 @@
-import { DateVO, UUID } from '@/domain/value-objects';
+import { DateVO, UUID } from '@Domain/value-objects';
 import {
   Controller,
   Post,
@@ -9,7 +9,8 @@ import {
   Req,
 } from '@nestjs/common';
 
-import { WebhookEventsGateway } from './webhook-events.gateway';
+import { WebhookEventsGateway } from '@Infra/events-gateway';
+import { BadRequestException } from '@App/exceptions';
 
 @Controller('webhook')
 export class WebhookController {
@@ -22,11 +23,18 @@ export class WebhookController {
     @Param('id') id: string,
     @Req() req: any,
   ): Promise<void> {
-    await this.webhookEventsGateway.wss.emit(id, {
-      body: JSON.stringify(data),
-      headers: JSON.stringify(req.headers),
-      time: DateVO.now().value,
-      id: UUID.generate().value,
-    });
+    try {
+      await this.webhookEventsGateway.wss.emit(id, {
+        body: JSON.stringify(data),
+        headers: JSON.stringify(req.headers),
+        time: DateVO.now().value,
+        id: UUID.generate().value,
+      });
+    } catch (error: any) {
+      throw new BadRequestException(
+        error?.message ?? 'Error to send websocket message',
+        error,
+      );
+    }
   }
 }

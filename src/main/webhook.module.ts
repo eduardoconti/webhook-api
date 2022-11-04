@@ -1,19 +1,9 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
 import { WebhookController } from '@Presentation/controllers';
-import { provideWebhookLogger } from './webhook.provider';
-import { WebhookEventsGateway } from '@/presentation/controllers/webhook/webhook-events.gateway';
-
+import { WebhookEventsGateway } from '@/infra/events-gateway/webhook-events.gateway';
 @Module({
-  imports: [
-    BullModule.registerQueue({
-      name: 'JOB',
-    }),
-  ],
-
   controllers: [WebhookController],
-
-  providers: [provideWebhookLogger, WebhookEventsGateway],
+  providers: [WebhookEventsGateway],
   exports: [],
 })
 export class WebhookModule {}
