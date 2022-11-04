@@ -12,7 +12,7 @@ import {
 import { WebhookEventsGateway } from '@Infra/events-gateway';
 import { BadRequestException } from '@App/exceptions';
 
-@Controller('webhook')
+@Controller()
 export class WebhookController {
   constructor(private readonly webhookEventsGateway: WebhookEventsGateway) {}
 
