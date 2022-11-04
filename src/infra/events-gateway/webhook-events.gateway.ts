@@ -1,3 +1,4 @@
+import { ILogger } from '@/domain/contracts';
 import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
@@ -7,6 +8,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { NestLogger } from '../logger';
 
 @WebSocketGateway({
   cors: {
@@ -17,18 +19,17 @@ export class WebhookEventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer() wss: Server;
-  private logger: Logger = new Logger('WebhookEventsGateway');
+  private logger: ILogger = new NestLogger('WebhookEventsGateway');
 
   handleDisconnect(client: any) {
-    this.logger.log('handleDisconnect');
+    this.logger.info(`handleDisconnect: ${client.id} `);
   }
 
-  handleConnection(client: any, ...args: any[]) {
-    console.log(client.id);
-    this.logger.log('handleConnection');
+  handleConnection(client: any) {
+    this.logger.info(`handleConnection: ${client.id} `);
   }
 
-  afterInit(server: any) {
-    this.logger.log('initialized');
+  afterInit() {
+    this.logger.info('initialized');
   }
 }

@@ -6,7 +6,6 @@ import { NestLogger } from './infra/logger';
 import {
   HttpExceptionFilter,
   BaseExceptionFilter,
-  UnknownExceptionFilter,
 } from './infra/exception-filter';
 
 async function bootstrap() {
@@ -14,9 +13,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableShutdownHooks();
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new BaseExceptionFilter());
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalFilters(new UnknownExceptionFilter());
+  app.useGlobalFilters(new BaseExceptionFilter(logger));
+  app.useGlobalFilters(new HttpExceptionFilter(logger));
   app.enableCors();
 
   await app.listen(process.env.PORT || 3000);

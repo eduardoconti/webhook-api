@@ -1,14 +1,6 @@
-import { WebhookEntity, WebhookProps } from '../entities';
 import { DeepPartial } from '../types';
 import { ID } from '../value-objects/id.value-object';
 import { BaseEntityProps } from './entity';
-
-/*  Most of repositories will probably need generic 
-    save/find/delete operations, so it's easier
-    to have some shared interfaces.
-    More specific interfaces should be defined
-    in a respective module/use case.
-*/
 
 export type QueryParams<EntityProps> = DeepPartial<
   BaseEntityProps & EntityProps
@@ -70,21 +62,3 @@ export interface IFindManyPaginated<Entity, EntityProps> {
 export interface IDeleteOne<Entity> {
   delete(entity: Entity): Promise<Entity>;
 }
-
-// export interface IRepository<Entity, EntityProps>
-//   extends ISave<Entity>,
-//     IFindOne<Entity, EntityProps>,
-//     IFindOneById<Entity>,
-//     IFindMany<Entity, EntityProps>,
-//     IFindManyPaginated<Entity, EntityProps>,
-//     IDeleteOne<Entity>,
-//     ISaveMultiple<Entity> {
-//   setCorrelationId(correlationId: string): this;
-// }
-
-export interface IWebhookRepository
-  extends ISave<WebhookEntity>,
-    IUpdate<WebhookEntity>,
-    IFindOne<WebhookEntity, WebhookProps>,
-    IFindMany<WebhookEntity, WebhookProps>,
-    IFindOneById<WebhookEntity> {}
