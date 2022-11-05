@@ -1,5 +1,4 @@
 import { ILogger } from '@/domain/contracts';
-import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,

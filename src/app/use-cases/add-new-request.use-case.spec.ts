@@ -1,31 +1,30 @@
 import { AddNewRequestUseCase, IAddNewRequestUseCase } from '@/app/use-cases';
 import { Test, TestingModule } from '@nestjs/testing';
-import { WebhookController } from './webhook.controller';
 
 describe('WebhookController', () => {
-  let controller: WebhookController;
   let addNewRequestUseCase: IAddNewRequestUseCase;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [WebhookController],
-      providers: [
-        {
-          provide: AddNewRequestUseCase,
-          useValue: {
-            execute: jest.fn(),
-          },
-        },
-      ],
+      providers: [AddNewRequestUseCase],
     }).compile();
 
-    controller = module.get<WebhookController>(WebhookController);
     addNewRequestUseCase =
       module.get<AddNewRequestUseCase>(AddNewRequestUseCase);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
     expect(addNewRequestUseCase).toBeDefined();
+  });
+
+  it('should execute successfuly', async () => {
+    await expect(
+      addNewRequestUseCase.execute({
+        body: '123',
+        headers: '123',
+        method: 'post',
+        webhookId: '1497aa6a-abcf-48be-82f3-3b74cf5b2e7f',
+      }),
+    ).toBeDefined();
   });
 });
