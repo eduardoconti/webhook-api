@@ -12,7 +12,3 @@
 
 echo '  -- build  -- \n'
 docker-compose up -d --build
-
-echo '  -- migrations  -- \n'
-docker exec -it api-taskmanager yarn migrate
-
