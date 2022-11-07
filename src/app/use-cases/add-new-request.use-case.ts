@@ -11,7 +11,6 @@ export type AddNewRequestUseCaseInput = {
 };
 
 export type IAddNewRequestUseCase = IUseCase<AddNewRequestUseCaseInput, void>;
-
 export class AddNewRequestUseCase implements IAddNewRequestUseCase {
   async execute(request: AddNewRequestUseCaseInput) {
     const entity = RequestEntity.create({

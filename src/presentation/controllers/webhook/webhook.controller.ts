@@ -11,10 +11,12 @@ import {
   Delete,
   Inject,
   Put,
+  CACHE_MANAGER,
 } from '@nestjs/common';
 
 import { Request } from 'express';
 import { AddNewRequestUseCase, IAddNewRequestUseCase } from '@/app/use-cases';
+import { Cache } from 'cache-manager';
 
 @Controller()
 export class WebhookController {
@@ -97,4 +99,7 @@ export class WebhookController {
       webhookId: id,
     });
   }
+
+  // @Post('/register')
+  // async register() {}
 }

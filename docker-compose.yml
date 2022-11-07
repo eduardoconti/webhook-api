@@ -1,15 +1,33 @@
 version: '3.7'
 services:
-  api-webhook:
-    container_name: api-webhook
-    restart: on-failure
-    build:
-      context: .
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+  # api-webhook:
+  #   container_name: api-webhook
+  #   restart: on-failure
+  #   build:
+  #     context: .
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - ${PORT}:${PORT}
+  #   command: yarn start:dev
+  #   env_file:
+  #     - .env  
+  #   networks:
+  #     - api-webhook      
+  redis:
+    image: redis:6.2-alpine
+    restart: always
     ports:
-      - ${PORT}:${PORT}
-    command: yarn start:dev
-    env_file:
-      - .env  
+      - ${REDIS_PORT}:${REDIS_PORT}
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis:/data
+    networks:
+      - api-webhook
+networks:
+  api-webhook:
+    driver: bridge 
+volumes:
+  redis:
+    driver: local

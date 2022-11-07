@@ -2,20 +2,26 @@ import { DateVO } from '@Domain/value-objects';
 import { WebhookEventsGateway } from '@Infra/events-gateway';
 import { DomainEventHandler } from '@Domain/domain-events';
 import { AddNewRequestEvent } from '@Domain/events';
-import { ILogger } from '@Domain/contracts';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER, Inject } from '@nestjs/common';
+import { NestLogger } from '../logger';
 
 export class AddNewRequestEventHandler extends DomainEventHandler {
   constructor(
     private readonly server: WebhookEventsGateway,
-    private readonly logger: ILogger,
+    private readonly logger: NestLogger,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     super(AddNewRequestEvent);
+    this.listen();
   }
 
   async handle(event: AddNewRequestEvent) {
     try {
       this.logger.info(JSON.stringify(event));
-      await this.server.wss.emit(event.webhookId, {
+      const socketId: string = await this.cacheManager.get(event.webhookId);
+      const socket = await this.server.wss.sockets.sockets.get(socketId);
+      await socket.emit('webhook', {
         body: event.body,
         headers: event.headers,
         time: new DateVO(event.dateOccurred).value,
