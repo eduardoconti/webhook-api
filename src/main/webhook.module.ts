@@ -1,12 +1,14 @@
-import { CacheModule, Module } from '@nestjs/common';
+import { CacheModule, CACHE_MANAGER, Module } from '@nestjs/common';
 import { WebhookController } from '@Presentation/controllers';
 import { WebhookEventsGateway } from '@/infra/events-gateway/webhook-events.gateway';
-import { AddNewRequestEventHandler } from '@Infra/event-handler';
+import { AddNewRequestEventHandler } from '@App/event-handler';
 import { AddNewRequestUseCase } from '@/app/use-cases';
 import { NestLogger } from '@/infra/logger';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ICacheManager, ILogger } from '@/domain/contracts';
+
 @Module({
   controllers: [WebhookController],
   imports: [
@@ -24,7 +26,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     WebhookEventsGateway,
     AddNewRequestUseCase,
     NestLogger,
-    AddNewRequestEventHandler,
+    {
+      provide: AddNewRequestEventHandler,
+      useFactory: async (
+        server: WebhookEventsGateway,
+        logger: ILogger,
+        cache: ICacheManager,
+      ) => {
+        return new AddNewRequestEventHandler(server, logger, cache);
+      },
+      inject: [WebhookEventsGateway, NestLogger, CACHE_MANAGER],
+    },
   ],
   exports: [],
 })

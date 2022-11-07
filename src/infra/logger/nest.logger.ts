@@ -8,11 +8,11 @@ export class NestLogger implements ILogger {
     this.logger = new Logger(context);
   }
 
-  info(message: string, data?: any): void {
+  info<T>(message: T): void {
     this.logger.log(message);
   }
 
-  error(message: string, data?: any): void {
+  error<T>(message: T): void {
     this.logger.error(message);
   }
 }

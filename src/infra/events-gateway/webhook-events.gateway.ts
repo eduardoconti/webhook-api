@@ -1,5 +1,5 @@
 import { ILogger } from '@/domain/contracts';
-import { CacheKey, CACHE_MANAGER, Inject } from '@nestjs/common';
+import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import {
   MessageBody,
   OnGatewayConnection,
@@ -41,6 +41,6 @@ export class WebhookEventsGateway
   async handleEvent(
     @MessageBody() data: { webHookId: string; socketId: string },
   ): Promise<void> {
-    await this.cacheManager.set(data.webHookId, data.socketId, 0);
+    await this.cacheManager.set<string>(data.webHookId, data.socketId, 0);
   }
 }

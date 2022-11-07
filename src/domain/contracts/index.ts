@@ -5,3 +5,4 @@ export * from './repository';
 export * from './logger';
 export * from './aggregate-root';
 export * from './socket-server';
+export * from './cache-manager';
