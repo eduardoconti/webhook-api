@@ -13,6 +13,10 @@ import { Cache } from 'cache-manager';
 import { Server } from 'socket.io';
 import { NestLogger } from '../logger';
 
+export type RegisterEvent = {
+  webHookId: string;
+  socketId: string;
+};
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -38,9 +42,7 @@ export class WebhookEventsGateway
   }
 
   @SubscribeMessage('register')
-  async handleEvent(
-    @MessageBody() data: { webHookId: string; socketId: string },
-  ): Promise<void> {
+  async handleEvent(@MessageBody() data: RegisterEvent): Promise<void> {
     await this.cacheManager.set<string>(data.webHookId, data.socketId, 0);
   }
 }

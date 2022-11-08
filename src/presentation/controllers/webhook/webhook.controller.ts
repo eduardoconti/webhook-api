@@ -7,16 +7,13 @@ import {
   Param,
   Req,
   Patch,
-  Get,
   Delete,
   Inject,
   Put,
-  CACHE_MANAGER,
 } from '@nestjs/common';
 
 import { Request } from 'express';
 import { AddNewRequestUseCase, IAddNewRequestUseCase } from '@/app/use-cases';
-import { Cache } from 'cache-manager';
 
 @Controller()
 export class WebhookController {
@@ -70,21 +67,6 @@ export class WebhookController {
     });
   }
 
-  @Get(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async get(
-    @Param('id') id: string,
-    @Req() req: Request,
-    @Body() data?: any,
-  ): Promise<void> {
-    await this.addNewRequestUseCase.execute({
-      body: JSON.stringify(data),
-      headers: JSON.stringify(req.headers),
-      method: 'GET',
-      webhookId: id,
-    });
-  }
-
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
@@ -99,7 +81,4 @@ export class WebhookController {
       webhookId: id,
     });
   }
-
-  // @Post('/register')
-  // async register() {}
 }

@@ -16,7 +16,6 @@ export class AddNewRequestEventHandler extends DomainEventHandler {
   }
 
   async handle(event: AddNewRequestEvent) {
-    // try {
     this.logger.info(JSON.stringify(event));
     const socketId = await this.cacheManager.get<string>(event.webhookId);
     const socket = await this.server.wss.sockets.sockets.get(socketId);
@@ -30,8 +29,5 @@ export class AddNewRequestEventHandler extends DomainEventHandler {
       id: event.id,
       method: event.method,
     });
-    // } catch (error: any) {
-    //   this.logger.error(error);
-    // }
   }
 }
